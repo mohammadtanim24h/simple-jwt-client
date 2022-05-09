@@ -1,12 +1,29 @@
 import React from "react";
 import { Button, Form } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+    const navigate = useNavigate();
     const handleLogin = (e) => {
         e.preventDefault();
         const email = e.target.email.value;
         const password = e.target.password.value;
-        console.log(email, password);
+        
+        fetch("http://localhost:5000/login", {
+            method: "POST",
+            headers: {
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({email, password})
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                localStorage.setItem("accessToken", data.accessToken);
+                navigate("/orders");
+            }
+            console.log(data);
+        })
     }
     return (
         <div className="w-50 mx-auto mt-3 shadow p-3 rounded bg-light">
